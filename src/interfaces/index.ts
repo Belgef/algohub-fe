@@ -3,7 +3,7 @@ export interface Lesson {
   title: string;
   content: string;
   author: User;
-  authorId: User;
+  authorId: number;
   creationDate: string;
   updateDate: string;
   imageUrl: string;
@@ -11,6 +11,14 @@ export interface Lesson {
   upvotes: number;
   downvotes: number;
   tags: Tag[];
+}
+
+export interface CreateLesson {
+  title: string;
+  content: string;
+  authorId: number;
+  frontImageName: string|undefined;
+  tags: string[];
 }
 
 export interface Tag {
@@ -32,4 +40,36 @@ export interface Page<T> {
   limit: number;
   page_count: number;
   items: T[];
+}
+export interface ContentElement {
+  type: ContentType;
+  value: string;
+  image: string;
+  code: string;
+}
+
+export enum ContentType {
+  Subtitle = "subtitle",
+  Emphasis = "emphasis",
+  Paragraph = "paragraph",
+  Image = "image",
+  Bar = "bar",
+  Code = "code",
+}
+
+export interface CreateLessonState {
+  title: string;
+  titleError: string;
+  content: CreateContentElement[];
+  contentError: string
+  tags: string[];
+  tagError: string;
+}
+
+export interface CreateContentElement {
+  type: ContentType;
+  value: string;
+  image: string;
+  code: string;
+  error: string;
 }

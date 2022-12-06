@@ -1,12 +1,10 @@
-import React from 'react'
-import { Lesson } from '../../interfaces'
+import React from "react";
+import { Lesson } from "../../interfaces";
 
-type Props = {item: Lesson}
+type Props = { item: Lesson };
 
 const HorizontalListBox = (props: Props) => {
-  return (
-    <div>{props.item.title}</div>
-  )
-}
+  return <div>{props.item.title}</div>;
+};
 
-export default HorizontalListBox
+export default HorizontalListBox;

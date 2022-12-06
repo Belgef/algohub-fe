@@ -1,5 +1,5 @@
 export enum Routes {
-    Root = '/',
-    Login = '/login',
-    Lessons = '/lessons'
-  }
+  Root = "/",
+  Login = "/login",
+  Lessons = "/lessons",
+}

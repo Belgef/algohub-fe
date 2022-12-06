@@ -24,4 +24,4 @@ const HomePage = () => {
   return <HorizontalLessonList items={data} />;
 };
 
-export default HomePage
+export default HomePage;

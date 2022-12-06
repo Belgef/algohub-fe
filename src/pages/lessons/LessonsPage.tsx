@@ -24,4 +24,4 @@ const LessonsPage = () => {
   return <HorizontalLessonList items={data!.items} />;
 };
 
-export default LessonsPage
+export default LessonsPage;

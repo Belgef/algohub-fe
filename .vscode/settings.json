@@ -1,0 +1,7 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.printWidth": 150,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python"
+  }
+}
