@@ -1,14 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ValidationError } from "yup";
 import { ContentType, CreateContentElement, CreateLessonState } from "../../interfaces";
 import {
-  createLessonParameterSchemas,
+  createLessonParameterSchemas as paramSchemas,
   contentArrayOnlyScheme,
   contentSchema,
-  tagSchema,
-  createLessonSchema,
 } from "../../validationSchemes/createLessonSchema";
-import { validateSchema } from "../../validationSchemes/validation";
+import { validate } from "../../validationSchemes/validation";
 
 //TODO: Change All Validate As In Title
 
@@ -16,7 +13,14 @@ const initialState: CreateLessonState = {
   title: "",
   titleError: "",
   content: [
-    { key: 0, type: ContentType.Paragraph, value: "write here...", imageInputId: "", code: "", error: "" },
+    {
+      key: 0,
+      type: ContentType.Paragraph,
+      value: "",
+      imageInputId: "",
+      code: "",
+      error: "",
+    },
   ],
   contentError: "",
   contentKey: 1,
@@ -29,77 +33,44 @@ export const createLessonSlice = createSlice({
   initialState: initialState,
   reducers: {
     setTitle: (state, action: PayloadAction<string>) => {
-      let res: CreateLessonState = { ...state };
-      validateSchema(createLessonParameterSchemas.title, action.payload)
-        .then(
-          () =>
-            (res = {
-              ...state,
-              title: action.payload,
-              titleError: "",
-            })
-        )
-        .catch(
-          (errors) =>
-            (res = {
-              ...state,
-              title: action.payload,
-              titleError: errors[0],
-            })
-        );
-      return res;
+      const errors = validate(action.payload, paramSchemas.title);
+      return {
+        ...state,
+        title: errors ? state.title : action.payload,
+        titleError: errors?.[0] ?? "",
+      };
     },
     addContent: (state, action: PayloadAction<ContentType>) => {
-      const newContent:CreateContentElement = {
+      const newContent: CreateContentElement = {
         key: state.contentKey,
         type: action.payload,
-        value: action.payload === ContentType.Code ? "language-javascript" : "",
+        value: action.payload === ContentType.Code ? "javascript" : "",
         imageInputId: "",
-        code: action.payload === ContentType.Code ? "dsfdf" : "",
+        code: "",
         error: "",
       };
-      try {
-        contentArrayOnlyScheme.validateSync([...state.content, newContent], { strict: true });
-        return {
-          ...state,
-          content: [...state.content, newContent],
-          contentError: "",
-          contentKey: state.contentKey + 1,
-        };
-      } catch (error) {
-        if (error instanceof ValidationError)
-          return {
-            ...state,
-            contentError: error.errors[0],
-          };
-      }
+      const errors = validate([...state.content, newContent], contentArrayOnlyScheme);
+      return {
+        ...state,
+        content: errors ? [...state.content, newContent] : state.content,
+        contentError: errors?.[0] ?? "",
+        contentKey: state.contentKey + (errors ? 0 : 1),
+      };
     },
     setContent: (state, action: PayloadAction<{ key: number; content: CreateContentElement }>) => {
-      const id = state.content.findIndex(c=>c.key===action.payload.key);
-      try {
-        contentSchema.validateSync(action.payload.content, { strict: true });
-        return {
-          ...state,
-          content: [
-            ...state.content.slice(0, id),
-            { ...action.payload.content, error: "" },
-            ...state.content.slice(id + 1),
-          ],
-        };
-      } catch (error) {
-        if (error instanceof ValidationError)
-          return {
-            ...state,
-            content: [
-              ...state.content.slice(0, id),
-              { ...action.payload.content, error: error.errors[0] },
-              ...state.content.slice(id + 1),
-            ],
-          };
-      }
+      const id = state.content.findIndex((c) => c.key === action.payload.key);
+      const errors = validate(action.payload.content, contentSchema);
+      return {
+        ...state,
+        content: [
+          ...state.content.slice(0, id),
+          { ...action.payload.content, error: errors?.[0] ?? "" },
+          ...state.content.slice(id + 1),
+        ],
+      };
     },
     deleteContent: (state, action: PayloadAction<number>) => {
-      const id = state.content.findIndex(c=>c.key===action.payload)
+      const id = state.content.findIndex((c) => c.key === action.payload);
       const newContent = state.content.filter((_, i) => i !== id);
       return {
         ...state,
@@ -108,30 +79,15 @@ export const createLessonSlice = createSlice({
       };
     },
     addTag: (state, action: PayloadAction<string>) => {
-      try {
-        const newTags = state.tags.concat(action.payload);
-        createLessonParameterSchemas.tags.validateSync(newTags, { strict: true });
-        tagSchema.validateSync(action.payload, { strict: true });
-        return { ...state, tags: newTags, tagError: "" };
-      } catch (error) {
-        if (error instanceof ValidationError) return { ...state, tagError: error.errors[0] };
-      }
+      const errors = validate([...state.tags, action.payload], paramSchemas.tags);
+      return {
+        ...state,
+        tags: errors ? state.tags : [...state.tags, action.payload],
+        tagError: errors?.[0] ?? "",
+      };
     },
     deleteTag: (state, action: PayloadAction<number>) => {
       return { ...state, tags: state.tags.filter((_, i) => i !== action.payload) };
-    },
-    validateLesson: (state) => {
-      let res: CreateLessonState = { ...state };
-      validateSchema(createLessonSchema, state)
-        .catch(
-          (errors) =>
-            (res = {
-              ...state,
-              title: action.payload,
-              titleError: errors[0],
-            })
-        );
-      return res;
     },
   },
 });
