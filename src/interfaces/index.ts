@@ -61,15 +61,17 @@ export interface CreateLessonState {
   title: string;
   titleError: string;
   content: CreateContentElement[];
-  contentError: string
+  contentError: string;
+  contentKey: number;
   tags: string[];
   tagError: string;
 }
 
 export interface CreateContentElement {
+  key: number;
   type: ContentType;
   value: string;
-  image: string;
+  imageInputId: string;
   code: string;
   error: string;
 }

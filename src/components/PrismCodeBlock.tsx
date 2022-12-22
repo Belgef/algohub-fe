@@ -41,7 +41,6 @@ export const PrismBlockEditable = (props: PrismBlockEditableProps) => {
         code={code}
         lineNumber={true}
         readOnly={false}
-        clipboard={true}
         changeCode={(c: string) => onChange(c, lang)}
       />
     </div>

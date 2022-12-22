@@ -48,8 +48,7 @@ export const createLessonParameterSchemas = {
     .min(2, "Title is too short")
     .max(120, "Title is too long"),
   tags: yup
-    .array()
-    .of(tagSchema)
+    .array(tagSchema)
     .max(20, "Maximum number of tags reached")
     .test({
       name: "unique",
@@ -62,8 +61,8 @@ export const createLessonParameterSchemas = {
     .max(40, "Maximum number of content elements reached"),
 };
 
-export const createLessonScheme = yup.object().shape({
+export const createLessonSchema = yup.object().shape({
   title: createLessonParameterSchemas.title,
+  tags: createLessonParameterSchemas.tags,
   content: createLessonParameterSchemas.content,
-  tags: createLessonParameterSchemas.tags
-})
+});

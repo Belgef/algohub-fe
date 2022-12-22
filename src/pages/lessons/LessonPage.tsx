@@ -5,7 +5,7 @@ import { Lesson } from "../../interfaces";
 import { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
 import { IMAGE_BASE_URL } from "../../constants";
-import { LessonContent } from "../../components/Content/LessonContent";
+import { LessonContent } from "../../components/CreateLessonComponents/LessonContent";
 
 const LessonPage = () => {
   const [lesson, setLesson] = useState<Lesson>();

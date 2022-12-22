@@ -1,0 +1,119 @@
+html, 
+body {
+    height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: rgb(186, 142, 239);
+}
+* {
+  font-family: "Poppins", sans-serif;
+  color:rgb(4, 13, 94)
+}
+nav {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 6rem;
+  padding-right: 6rem;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+}
+.menubar {
+  display: flex;
+}
+.brand a {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: inherit;
+}
+.content {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 6rem;
+  padding-right: 6rem;
+  /* background: radial-gradient(
+      circle at 100% 70vh,
+      rgba(252, 24, 255, 1) 0%,
+      rgba(98, 0, 255, 1) 40vw,
+      #ffffff00 40.25vw
+    ),
+    radial-gradient(circle at 60% 20vh, rgba(98, 0, 255, 1) 5vw, #ffffff00 5.25vw); */
+}
+.horizontal-title-block {
+  display:flex;
+  justify-content: space-between;
+}
+.input-title-block{
+  display: flex;
+  flex-direction: column;
+}
+.input-title {
+  font-weight: normal;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 2em;
+  border: none;
+  border-bottom: solid black 1px;
+  width: auto;
+  mask-border: none;
+}
+.input-title:focus{
+}
+.add-image-button{
+  width: 5rem;
+  height: 3rem;
+  border-radius: 20%;
+  border: none;
+  /*background-color: blueviolet;
+  color: white;*/
+  cursor: pointer;
+}
+.add-image-block {
+  position: relative;
+}
+.add-image-title{
+  margin: 0;
+}
+.cancel {
+  position: absolute;
+  top:0;
+  right: 0.5em;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  opacity: 70%;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.9em;
+  width: 1em;
+}
+.cancel:hover{
+  background-color: rgba(0, 0, 0, 10%);
+}
+.title-image-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.title-image{
+  max-height: 100vh;
+  width: auto;
+  object-fit: contain;
+}
+.tag-added {
+  display: inline;
+  padding-left: 5px;
+  padding-right: 20px;
+  position: relative;
+  background-color: white;
+  border-radius: 8px;
+  margin: 2px;
+  font-size: 0.7em;
+}
+.danger {
+  color: red;
+  font-size: 0.8em;
+}

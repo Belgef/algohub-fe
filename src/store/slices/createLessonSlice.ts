@@ -6,16 +6,20 @@ import {
   contentArrayOnlyScheme,
   contentSchema,
   tagSchema,
+  createLessonSchema,
 } from "../../validationSchemes/createLessonSchema";
 import { validateSchema } from "../../validationSchemes/validation";
+
+//TODO: Change All Validate As In Title
 
 const initialState: CreateLessonState = {
   title: "",
   titleError: "",
   content: [
-    { type: ContentType.Paragraph, value: "write here...", image: "", code: "", error: "" },
+    { key: 0, type: ContentType.Paragraph, value: "write here...", imageInputId: "", code: "", error: "" },
   ],
   contentError: "",
+  contentKey: 1,
   tags: [],
   tagError: "",
 };
@@ -25,7 +29,7 @@ export const createLessonSlice = createSlice({
   initialState: initialState,
   reducers: {
     setTitle: (state, action: PayloadAction<string>) => {
-      let res:CreateLessonState = { ...state };
+      let res: CreateLessonState = { ...state };
       validateSchema(createLessonParameterSchemas.title, action.payload)
         .then(
           () =>
@@ -46,10 +50,11 @@ export const createLessonSlice = createSlice({
       return res;
     },
     addContent: (state, action: PayloadAction<ContentType>) => {
-      const newContent = {
+      const newContent:CreateContentElement = {
+        key: state.contentKey,
         type: action.payload,
         value: action.payload === ContentType.Code ? "language-javascript" : "",
-        image: "",
+        imageInputId: "",
         code: action.payload === ContentType.Code ? "dsfdf" : "",
         error: "",
       };
@@ -59,6 +64,7 @@ export const createLessonSlice = createSlice({
           ...state,
           content: [...state.content, newContent],
           contentError: "",
+          contentKey: state.contentKey + 1,
         };
       } catch (error) {
         if (error instanceof ValidationError)
@@ -68,15 +74,16 @@ export const createLessonSlice = createSlice({
           };
       }
     },
-    setContent: (state, action: PayloadAction<{ id: number; content: CreateContentElement }>) => {
+    setContent: (state, action: PayloadAction<{ key: number; content: CreateContentElement }>) => {
+      const id = state.content.findIndex(c=>c.key===action.payload.key);
       try {
         contentSchema.validateSync(action.payload.content, { strict: true });
         return {
           ...state,
           content: [
-            ...state.content.slice(0, action.payload.id),
+            ...state.content.slice(0, id),
             { ...action.payload.content, error: "" },
-            ...state.content.slice(action.payload.id + 1),
+            ...state.content.slice(id + 1),
           ],
         };
       } catch (error) {
@@ -84,29 +91,21 @@ export const createLessonSlice = createSlice({
           return {
             ...state,
             content: [
-              ...state.content.slice(0, action.payload.id),
+              ...state.content.slice(0, id),
               { ...action.payload.content, error: error.errors[0] },
-              ...state.content.slice(action.payload.id + 1),
+              ...state.content.slice(id + 1),
             ],
           };
       }
     },
     deleteContent: (state, action: PayloadAction<number>) => {
-      try {
-        const newContent = state.content.filter((_, i) => i !== action.payload);
-        createLessonParameterSchemas.content.validateSync(newContent, { strict: true });
-        return {
-          ...state,
-          content: newContent,
-          contentError: "",
-        };
-      } catch (error) {
-        if (error instanceof ValidationError)
-          return {
-            ...state,
-            contentError: error.errors[0],
-          };
-      }
+      const id = state.content.findIndex(c=>c.key===action.payload)
+      const newContent = state.content.filter((_, i) => i !== id);
+      return {
+        ...state,
+        content: newContent,
+        contentError: "",
+      };
     },
     addTag: (state, action: PayloadAction<string>) => {
       try {
@@ -121,7 +120,19 @@ export const createLessonSlice = createSlice({
     deleteTag: (state, action: PayloadAction<number>) => {
       return { ...state, tags: state.tags.filter((_, i) => i !== action.payload) };
     },
-    //validateLesson: (state) => {},
+    validateLesson: (state) => {
+      let res: CreateLessonState = { ...state };
+      validateSchema(createLessonSchema, state)
+        .catch(
+          (errors) =>
+            (res = {
+              ...state,
+              title: action.payload,
+              titleError: errors[0],
+            })
+        );
+      return res;
+    },
   },
 });
 
